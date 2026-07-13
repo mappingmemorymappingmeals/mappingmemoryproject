@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Phase 1: Write test_core.py - Excel data parsing/joining (100 entries + geo + origins)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 1: Test Gemini AI (tour script, snapshot, 5 questions, BN/HI translation) in test_core.py",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 1: Run POC and fix until PASS",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Get design guidelines from design_agent",
+    "status": "in_progress"
+  },
+  {
+    "content": "Phase 2: Seed MongoDB with all parsed data",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Backend - entries/communities/districts/meta + AI endpoints",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Frontend - 3D MapLibre map with cinematic India→WB→district flow",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Frontend - tribal markers, layer filters, 3D popups, detail panel with 13+14 layers",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Talking Tours (Web Speech EN/BN/HI), Snapshot, 5 AI questions, music player",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: All user stories covered in development",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: End to End Testing using Testing Agent",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 3: Fix all bugs found by testing agent",
+    "status": "pending"
+  }
+]
