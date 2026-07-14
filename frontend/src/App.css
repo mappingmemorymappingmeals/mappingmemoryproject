@@ -340,6 +340,22 @@
     animation: float-slow 5s ease-in-out infinite;
 }
 
+/* Stationary glow pulse — animates box-shadow/opacity only, element never moves
+   (stable click target for users and automation) */
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 10px 40px rgba(208, 122, 58, 0.4);
+    }
+    50% {
+        box-shadow: 0 10px 55px rgba(208, 122, 58, 0.65);
+    }
+}
+
+.pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
 /* maplibre overrides */
 .maplibregl-ctrl-attrib {
     background: rgba(20, 14, 8, 0.75) !important;

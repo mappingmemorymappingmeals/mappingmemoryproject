@@ -58,10 +58,10 @@ export default function IntroOverlay({ open, onBegin, stats, lang, setLang }) {
                 <TribalIcon name="bowl" size={16} color="#e3b448" /> {stats?.entries ?? 100} {L.entries}
               </span>
               <span className="flex items-center gap-2">
-                <TribalIcon name="community" size={16} color="#e3b448" /> {stats?.communities ?? 16} {L.communities}
+                <TribalIcon name="community" size={16} color="#e3b448" /> {stats?.communities ?? "7+"} {L.communities}
               </span>
               <span className="flex items-center gap-2">
-                <TribalIcon name="pin" size={16} color="#e3b448" /> {stats?.districts ?? 30} {L.districts}
+                <TribalIcon name="pin" size={16} color="#e3b448" /> {stats?.districts ?? 7} {L.districts}
               </span>
               <span className="flex items-center gap-2">
                 <TribalIcon name="weave" size={16} color="#e3b448" /> {stats?.layers ?? 14} {L.layersWord}
@@ -85,11 +85,11 @@ export default function IntroOverlay({ open, onBegin, stats, lang, setLang }) {
               ))}
             </div>
 
-            <div className="float-slow inline-block">
+            <div className="inline-block">
               <Button
                 onClick={onBegin}
                 data-testid="begin-journey-button"
-                className="bg-[#d07a3a] hover:bg-[#e08a4e] text-[#1a120a] font-semibold text-base px-10 py-6 rounded-full shadow-[0_10px_40px_rgba(208,122,58,0.4)] transition-colors duration-200"
+                className="pulse-glow bg-[#d07a3a] hover:bg-[#e08a4e] text-[#1a120a] font-semibold text-base px-10 py-6 rounded-full shadow-[0_10px_40px_rgba(208,122,58,0.4)] transition-colors duration-200"
               >
                 {L.begin} →
               </Button>

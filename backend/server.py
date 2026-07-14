@@ -90,9 +90,9 @@ async def root():
 @api_router.get("/stats")
 async def stats():
     n_entries = await db.entries.count_documents({})
-    n_comm = await db.communities.count_documents({})
-    districts = await db.entries.distinct("district")
-    return {"entries": n_entries, "communities": n_comm, "districts": len(districts), "layers": 14}
+    # Corrected reflection (user-mandated): 100 food traditions, 7+ tribal
+    # communities, 7 districts, 14 knowledge layers.
+    return {"entries": n_entries or 100, "communities": "7+", "districts": 7, "layers": 14}
 
 
 @api_router.get("/entries")
@@ -239,6 +239,9 @@ async def ai_tour(req: TourRequest):
         "grounded ONLY in the facts provided. Cover the place and its ecology, the community, how the food is "
         "gathered and made, its seasonal rhythm, its folklore and sacred meaning, and why preserving it matters. "
         "Weave in vivid sensory detail. No headings, no markdown, no lists — flowing spoken prose only. "
+        "This text is read aloud by a speech engine: use expressive punctuation for emotional pacing — "
+        "commas for breath, ellipses… for wonder, em-dashes for drama, short exclamations, and an occasional "
+        "gentle question to the listener. Vary sentence length: some short. Some long and flowing. "
         f"Write the entire narration in {lang}."
     )
     ctx = entry_context(e)
@@ -260,6 +263,8 @@ async def ai_snapshot(req: SnapshotRequest):
         "You are an AI lens analyzing a live 3D heritage map of West Bengal's indigenous tribal food landmarks. "
         "Given the current view context, produce a vivid 130-180 word 'snapshot analysis' describing what the viewer "
         "is seeing — the landscape, the communities and their foods — and why it matters culturally. "
+        "The text is read aloud: use expressive punctuation — commas, ellipses…, em-dashes — for natural, "
+        "emotional spoken pacing. "
         f"Plain flowing text only, no markdown. Write entirely in {lang}."
     )
     foods = ", ".join(req.visible_foods[:12]) or "various tribal heritage foods"

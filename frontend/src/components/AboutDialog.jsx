@@ -41,9 +41,9 @@ export default function AboutDialog({ open, onOpenChange }) {
                 <p>
                   Explore a selection of West Bengal's cultural landmarks and food heritage through immersive,
                   audio-guided tours generated with the help of AI. This deep map documents <b>100 living food
-                  traditions</b> of <b>16 indigenous tribal communities</b> — Toto, Santal, Oraon, Rajbanshi, Lodha,
-                  Kheria Sabar, Lepcha, Bhutia, Sherpa, Mech, Rabha, Garo, Munda, Bhumij, Birhor, Limbu and more —
-                  across <b>14 layers of knowledge</b>: ecology, community, ethnobotany, culinary technology,
+                  traditions</b> of <b>7+ indigenous tribal communities</b> — Toto, Santal, Oraon, Rajbanshi, Lodha,
+                  Kheria Sabar, Lepcha and more — spread over <b>7 districts</b> and
+                  woven through <b>14 layers of knowledge</b>: ecology, community, ethnobotany, culinary technology,
                   seasonality, folklore, lost traditions, sacred foods, medicine, cultural significance and deep
                   historical origins.
                 </p>
@@ -161,6 +161,9 @@ export default function AboutDialog({ open, onOpenChange }) {
                   <div>
                     <p className="font-bold text-[#f2ece1] text-[18px]">
                       © Simanta Nandi · Dr. Gigy J Alex
+                    </p>
+                    <p className="text-[17px]">
+                      Department of Humanities and Social Sciences
                     </p>
                     <p className="text-[17px]">
                       Indian Institute of Space Science and Technology, Thiruvananthapuram · 2026

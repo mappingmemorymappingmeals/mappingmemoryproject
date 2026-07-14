@@ -64,7 +64,7 @@ export default function DetailDrawer({ entry, lang, onClose, onBack, onStartTour
       className={`drawer-anim absolute z-40 mmm-panel mmm-panel-carved flex flex-col ${
         isMobile
           ? "inset-0 rounded-none"
-          : "right-4 top-16 bottom-4 w-[560px] max-w-[94vw] rounded-[18px]"
+          : "right-4 top-24 bottom-4 w-[560px] max-w-[94vw] rounded-[18px]"
       }`}
       data-testid="food-detail-drawer"
     >

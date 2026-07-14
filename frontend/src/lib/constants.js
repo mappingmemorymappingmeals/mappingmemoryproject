@@ -59,24 +59,26 @@ export const CATEGORY_GROUPS = [
   "Traditional Dishes",
 ];
 
-// ------- MUSIC: 8-track queue — each 2-4 min, auto-advances -------
+// ------- MUSIC: 10-track queue — each 2-4.5 min, auto-advances -------
 export const TRACKS = [
-  { id: "hrid_majhare", name: "Hrid Majhare — Bengali Folk", src: "/audio/hrid_majhare.mp3", credit: "Bappaditya Mondal — তোমায় হৃদ মাঝারে রাখব · Jamendo · CC BY-NC-ND" },
-  { id: "baul_song", name: "Baul of Bengal", src: "/audio/baul_song.mp3", credit: "Baul Das — Shiv Vandana · CC0 Public Domain" },
-  { id: "baul_bhajan", name: "Baul Bhajan — Shiv Vandana", src: "/audio/baul_bhajan.mp3", credit: "Baul Das — Shiv Vandana · CC0 Public Domain" },
-  { id: "baul_mon", name: "Baul Mon — Devotional Folk", src: "/audio/baul_mon.mp3", credit: "Baul Das — Shiv Vandana · CC0 Public Domain" },
+  { id: "sohrai", name: "Sohrai — Santali Harvest Song", src: "/audio/sohrai.mp3", credit: "Traditional Santali Sohrai festival song · via archive.org" },
+  { id: "resham_firiri", name: "Resham Firiri — Nepali Folk", src: "/audio/resham_firiri.mp3", credit: "Traditional Nepali folk song · via archive.org" },
+  { id: "baha", name: "Baha — Santali Spring Song", src: "/audio/baha.mp3", credit: "Traditional Santali Baha festival song · via archive.org" },
+  { id: "tamang_selo", name: "Tamang Selo — Damphu Rhythm", src: "/audio/tamang_selo.mp3", credit: "Traditional Tamang Selo with damphu · via archive.org" },
+  { id: "lagre", name: "Lagre — Santali Dance Song", src: "/audio/lagre.mp3", credit: "Traditional Santali Lagre dance song · via archive.org" },
+  { id: "malsiri", name: "Malsiri — Himalayan Melody", src: "/audio/malsiri.mp3", credit: "Traditional Malshree (Malsiri) melody · via archive.org" },
   { id: "wb_folk_1", name: "Junglemahal Folk", src: "/audio/wb_folk_1.mp3", credit: "IGRMS West Bengal Tour · CC BY-NC 4.0" },
-  { id: "tribal_drums_1", name: "Himalayan Drums", src: "/audio/tribal_drums_1.mp3", credit: "Tribal Trance · CC0 Public Domain" },
   { id: "mausam", name: "Mausam — Himalayan Folk", src: "/audio/mausam.mp3", credit: "Kontraa — Nepalese Folk · Jamendo · CC BY-ND" },
+  { id: "tribal_drums_1", name: "Himalayan Drums", src: "/audio/tribal_drums_1.mp3", credit: "Tribal Trance · CC0 Public Domain" },
   { id: "suruwat", name: "Suruwat — Nepali Folk", src: "/audio/suruwat.mp3", credit: "Kontraa — Nepalese Folk · Jamendo · CC BY-SA" },
 ];
 
 export function trackForCommunity(name = "") {
   const n = name.toLowerCase();
-  if (/(santal|munda|bhumij|lodha|kheria|birhor|sabar)/.test(n)) return 4; // Junglemahal Folk
-  if (/(toto|lepcha|bhutia|sherpa|tamang|limbu|dukpa|gorkha|nepali)/.test(n)) return 6; // Mausam
-  if (/(rajbanshi|mech|rabha|garo|oraon)/.test(n)) return 0; // Hrid Majhare
-  return 1; // Baul of Bengal
+  if (/(santal|munda|bhumij|lodha|kheria|birhor|sabar)/.test(n)) return 0; // Sohrai — Santali
+  if (/(toto|lepcha|bhutia|sherpa|tamang|limbu|dukpa|gorkha|nepali)/.test(n)) return 1; // Resham Firiri — Himalayan
+  if (/(rajbanshi|mech|rabha|garo|oraon)/.test(n)) return 6; // Junglemahal Folk
+  return 4; // Lagre — Santali dance
 }
 
 // ------- TOUR BACKGROUNDS: rotating cultural imagery (local, credited) -------
@@ -110,21 +112,21 @@ export const LOADING_MESSAGES = {
   en: [
     "Every recipe is a memory. Every memory is a map…",
     "Awakening the forests, rivers and hearths of West Bengal…",
-    "Sixteen tribal nations. One hundred living food traditions…",
+    "Seven-plus tribal communities. One hundred living food traditions…",
     "What an elder forgets, a civilisation loses. Let us remember together…",
     "Curiosity is the first step of preservation. Start exploring…",
   ],
   bn: [
     "প্রতিটি রান্না একটি স্মৃতি। প্রতিটি স্মৃতি একটি মানচিত্র…",
     "পশ্চিমবঙ্গের অরণ্য, নদী ও উনুন জেগে উঠছে…",
-    "ষোলটি আদিবাসী জাতি। একশো জীবন্ত খাদ্য ঐতিহ্য…",
+    "সাতটিরও বেশি আদিবাসী জাতি। একশো জীবন্ত খাদ্য ঐতিহ্য…",
     "প্রবীণ যা ভোলেন, সভ্যতা তা হারায়। এসো একসাথে মনে রাখি…",
     "কৌতূহলই সংরক্ষণের প্রথম ধাপ। অন্বেষণ শুরু করুন…",
   ],
   hi: [
     "हर व्यंजन एक स्मृति है। हर स्मृति एक मानचित्र…",
     "पश्चिम बंगाल के जंगल, नदियाँ और चूल्हे जाग रहे हैं…",
-    "सोलह आदिवासी समुदाय। सौ जीवित खाद्य परंपराएं…",
+    "सात से अधिक आदिवासी समुदाय। सौ जीवित खाद्य परंपराएं…",
     "जो बुज़ुर्ग भूलते हैं, वह सभ्यता खो देती है। आइए साथ याद रखें…",
     "जिज्ञासा संरक्षण का पहला कदम है। खोज शुरू करें…",
   ],

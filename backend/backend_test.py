@@ -102,14 +102,12 @@ class BackendTester:
                 return "Response is not a dict"
             if data.get('entries') != 100:
                 return f"Expected 100 entries, got {data.get('entries')}"
-            if data.get('communities') != 16:
-                return f"Expected 16 communities, got {data.get('communities')}"
+            if data.get('communities') != '7+':
+                return f"Expected '7+' communities, got {data.get('communities')}"
+            if data.get('districts') != 7:
+                return f"Expected 7 districts, got {data.get('districts')}"
             if data.get('layers') != 14:
                 return f"Expected 14 layers, got {data.get('layers')}"
-            # Districts should be around 30 (flexible)
-            districts = data.get('districts', 0)
-            if districts < 10 or districts > 40:
-                return f"Expected ~30 districts, got {districts}"
             return True
         
         return self.run_test(

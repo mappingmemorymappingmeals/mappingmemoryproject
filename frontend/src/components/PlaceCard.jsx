@@ -12,8 +12,8 @@ export default function PlaceCard({ place, lang, onClose, onEntryOpen, isMobile 
         <div
           className={`absolute z-20 ${
             isMobile
-              ? "bottom-24 left-1/2 -translate-x-1/2 w-[94vw] max-w-[440px]"
-              : "bottom-24 right-6 w-[92vw] max-w-[440px]"
+              ? "bottom-28 left-1/2 -translate-x-1/2 w-[94vw] max-w-[440px]"
+              : "bottom-28 right-6 w-[92vw] max-w-[440px]"
           }`}
         >
           <motion.div

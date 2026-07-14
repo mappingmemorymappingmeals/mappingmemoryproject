@@ -1,62 +1,22 @@
 [
   {
-    "content": "Backend: richer AI context, Q&A-with-answers endpoint",
+    "content": "Update MUSIC_TRACKS in constants.js with new downloaded tracks",
     "status": "completed"
   },
   {
-    "content": "More tribal music (8-track queue, auto-advance) + verified all playable",
+    "content": "Enforce font sizes: 20pt headings, 15pt small/body text (index.css overrides)",
     "status": "completed"
   },
   {
-    "content": "Rotating cultural background images in Talking Tour",
+    "content": "Correct stats reflection everywhere: 100 traditions, 7+ communities, 14 layers, 7 districts",
     "status": "completed"
   },
   {
-    "content": "AI-generated answers (not just questions) grounded in content",
-    "status": "completed"
-  },
-  {
-    "content": "Better BN/HI voices + emotional voice modulation + voice picker",
-    "status": "completed"
-  },
-  {
-    "content": "Loading screen (7-8s) with cultural/curiosity/heritage messages",
-    "status": "completed"
-  },
-  {
-    "content": "Guide/Toolbox dialog (trilingual) explaining all features + scroll fix",
-    "status": "completed"
-  },
-  {
-    "content": "About dialog: full details, how-it-works, keyboard shortcuts, licensing, credits, copyright",
-    "status": "completed"
-  },
-  {
-    "content": "Keyboard shortcuts for map navigation",
-    "status": "completed"
-  },
-  {
-    "content": "Times New Roman font, bigger fonts/icons/panels everywhere",
-    "status": "completed"
-  },
-  {
-    "content": "Back button + Home view button",
-    "status": "completed"
-  },
-  {
-    "content": "Remove layer numbering - show only layer names",
-    "status": "completed"
-  },
-  {
-    "content": "Show fuller content reflecting full Excel richness",
-    "status": "completed"
-  },
-  {
-    "content": "Desktop + mobile accessible with user-selectable layout toggle",
-    "status": "completed"
-  },
-  {
-    "content": "End-to-end testing with testing agent + fix all bugs",
+    "content": "Verify map view, music player queue & AI script punctuation (emotional touch)",
     "status": "in_progress"
+  },
+  {
+    "content": "Run final testing pass (frontend + backend)",
+    "status": "pending"
   }
 ]

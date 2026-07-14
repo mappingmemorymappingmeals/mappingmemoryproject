@@ -7,7 +7,7 @@ body {
     font-family: 'Times New Roman', Times, 'Hind Siliguri', 'Hind', Georgia, serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 18px;
+    font-size: 15pt; /* user-mandated: small/body text = 15pt */
 }
 
 code {
@@ -70,6 +70,35 @@ code {
         letter-spacing: 0.01em;
         font-weight: 700;
     }
+}
+
+/* ============================================================
+   USER-MANDATED TYPE SCALE (accessibility / eye comfort)
+   Headings: exactly 20pt  ·  Small & body text: exactly 15pt
+   These overrides sit after @tailwind utilities so they win.
+   ============================================================ */
+
+/* All small/body utility sizes -> 15pt (20px) */
+.text-xs, .text-sm, .text-base, .text-lg,
+.text-\[11px\], .text-\[11\.5px\], .text-\[12px\], .text-\[12\.5px\],
+.text-\[13px\], .text-\[13\.5px\], .text-\[14px\], .text-\[14\.5px\],
+.text-\[15px\], .text-\[15\.5px\], .text-\[16px\], .text-\[16\.5px\],
+.text-\[17px\], .text-\[17\.5px\], .text-\[18px\], .text-\[18\.5px\], .text-\[19px\] {
+    font-size: 15pt !important; /* = 20px */
+    line-height: 1.45 !important;
+}
+
+/* Heading-scale utilities -> 20pt (~26.7px). Larger hero sizes stay larger. */
+.text-xl, .text-2xl,
+.text-\[20px\], .text-\[21px\], .text-\[22px\], .text-\[23px\], .text-\[24px\], .text-\[25px\], .text-\[26px\] {
+    font-size: 20pt !important; /* ~26.7px */
+    line-height: 1.3 !important;
+}
+
+/* Headings without an explicit utility class default to 20pt */
+h1, h2, h3, h4, h5, h6 {
+    font-size: 20pt;
+    line-height: 1.3;
 }
 
 ::selection {

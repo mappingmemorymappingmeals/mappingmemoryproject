@@ -61,7 +61,7 @@ export default function FilterPanel({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -380, opacity: 0 }}
           transition={{ duration: 0.32, ease: "easeOut" }}
-          className="absolute left-3 md:left-5 top-16 bottom-24 z-20 w-[86vw] max-w-[330px] mmm-panel mmm-panel-carved flex flex-col"
+          className="absolute left-3 md:left-5 top-24 bottom-24 z-20 w-[86vw] max-w-[330px] mmm-panel mmm-panel-carved flex flex-col"
           data-testid="filter-panel"
         >
           <div className="flex items-center justify-between px-5 pt-4 pb-2">
