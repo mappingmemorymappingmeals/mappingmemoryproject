@@ -91,8 +91,8 @@ async def root():
 async def stats():
     n_entries = await db.entries.count_documents({})
     # Corrected reflection (user-mandated): 100 food traditions, 7+ tribal
-    # communities, 7 districts, 14 knowledge layers.
-    return {"entries": n_entries or 100, "communities": "7+", "districts": 7, "layers": 14}
+    # communities, 10 districts, 14 knowledge layers.
+    return {"entries": n_entries or 100, "communities": "7+", "districts": 10, "layers": 14}
 
 
 @api_router.get("/entries")

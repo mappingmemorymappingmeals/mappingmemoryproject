@@ -61,7 +61,7 @@ export default function IntroOverlay({ open, onBegin, stats, lang, setLang }) {
                 <TribalIcon name="community" size={16} color="#e3b448" /> {stats?.communities ?? "7+"} {L.communities}
               </span>
               <span className="flex items-center gap-2">
-                <TribalIcon name="pin" size={16} color="#e3b448" /> {stats?.districts ?? 7} {L.districts}
+                <TribalIcon name="pin" size={16} color="#e3b448" /> {stats?.districts ?? 10} {L.districts}
               </span>
               <span className="flex items-center gap-2">
                 <TribalIcon name="weave" size={16} color="#e3b448" /> {stats?.layers ?? 14} {L.layersWord}
