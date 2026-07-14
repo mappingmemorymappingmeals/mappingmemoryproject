@@ -151,6 +151,60 @@ const MapView = forwardRef(function MapView(
     pulseRef.current = requestAnimationFrame(tick);
   };
 
+  // ---- keyboard shortcuts: arrows pan, +/- zoom, Home/End/PgUp/PgDn jump 75%
+  useEffect(() => {
+    const onKey = (e) => {
+      const map = mapRef.current;
+      if (!map) return;
+      const tag = (document.activeElement?.tagName || "").toLowerCase();
+      if (["input", "textarea", "select"].includes(tag)) return;
+      if (document.activeElement?.getAttribute?.("contenteditable")) return;
+      const w = map.getContainer().clientWidth;
+      const h = map.getContainer().clientHeight;
+      const small = 120;
+      const opts = { duration: 350 };
+      switch (e.key) {
+        case "ArrowLeft":
+          map.panBy([-small, 0], opts);
+          break;
+        case "ArrowRight":
+          map.panBy([small, 0], opts);
+          break;
+        case "ArrowUp":
+          map.panBy([0, -small], opts);
+          break;
+        case "ArrowDown":
+          map.panBy([0, small], opts);
+          break;
+        case "+":
+        case "=":
+          map.zoomIn({ duration: 300 });
+          break;
+        case "-":
+        case "_":
+          map.zoomOut({ duration: 300 });
+          break;
+        case "Home":
+          map.panBy([-0.75 * w, 0], { duration: 500 });
+          break;
+        case "End":
+          map.panBy([0.75 * w, 0], { duration: 500 });
+          break;
+        case "PageUp":
+          map.panBy([0, -0.75 * h], { duration: 500 });
+          break;
+        case "PageDown":
+          map.panBy([0, 0.75 * h], { duration: 500 });
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   useImperativeHandle(ref, () => ({
     startCinematic() {
       const map = mapRef.current;

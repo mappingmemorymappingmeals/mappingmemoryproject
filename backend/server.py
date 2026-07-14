@@ -37,17 +37,17 @@ def clean(doc):
     return doc
 
 
-def entry_context(e: dict, limit: int = 450) -> str:
+def entry_context(e: dict, limit: int = 1200) -> str:
     return (
         f"Food: {e['food_name']} (local name: {e['local_name']}; scientific: {e['scientific_name']}) | "
         f"Category: {e['category']} | Community: {e['community']} (PVTG: {e['pvtg_status']}) | "
         f"Place: {e['block_village']}, {e['district']} district, West Bengal | Ecology: {e['ecology']} | "
         f"Ingredients: {e['ingredients'][:limit]} | Preparation: {e['culinary_technology'][:limit]} | "
-        f"Vessels/tools: {e['vessel_tool'][:200]} | Season: {e['season'][:200]} | "
-        f"Folklore & memory: {e['cultural_memory'][:limit]} | Ritual use: {e['ritual_use'][:250]} | "
-        f"Sacred: {e['sacred_foods'][:250]} | Medicinal: {e['medicinal_value'][:250]} | "
-        f"Cultural significance: {e['cultural_significance'][:250]} | "
-        f"Lost/at-risk traditions: {e['lost_traditions'][:250]}"
+        f"Vessels/tools: {e['vessel_tool'][:500]} | Season: {e['season'][:400]} | Scarcity: {e['scarcity'][:400]} | "
+        f"Folklore & memory: {e['cultural_memory'][:limit]} | Ritual use: {e['ritual_use'][:600]} | "
+        f"Sacred: {e['sacred_foods'][:600]} | Medicinal: {e['medicinal_value'][:600]} | "
+        f"Cultural significance: {e['cultural_significance'][:600]} | "
+        f"Lost/at-risk traditions: {e['lost_traditions'][:600]}"
     )
 
 
@@ -235,15 +235,16 @@ async def ai_tour(req: TourRequest):
     lang = LANG_NAMES.get(req.language, "English")
     sysmsg = (
         "You are a warm, evocative audio-tour guide for West Bengal's indigenous tribal food heritage, "
-        "in the spirit of a museum audio guide. Write immersive second-person narration, 160-210 words, "
-        "grounded ONLY in the facts provided. Mention the place, the community, how the food is made, and one "
-        "striking cultural or sacred detail. No headings, no markdown, no lists — flowing spoken prose only. "
+        "in the spirit of a museum audio guide. Write immersive second-person narration, 260-340 words, "
+        "grounded ONLY in the facts provided. Cover the place and its ecology, the community, how the food is "
+        "gathered and made, its seasonal rhythm, its folklore and sacred meaning, and why preserving it matters. "
+        "Weave in vivid sensory detail. No headings, no markdown, no lists — flowing spoken prose only. "
         f"Write the entire narration in {lang}."
     )
     ctx = entry_context(e)
     origin_hint = ""
     if e.get("origin"):
-        origin_hint = f" | Historical origin: {e['origin']['geographic_origin'][:250]}"
+        origin_hint = f" | Historical origin: {e['origin']['geographic_origin'][:500]} | Origin story: {e['origin']['origin_narrative'][:600]}"
     script = await cached_ai(
         f"tour|{req.entry_id}|{req.language}", sysmsg,
         f"Create the audio tour narration for this heritage food landmark:\n{ctx}{origin_hint}",
@@ -257,7 +258,7 @@ async def ai_snapshot(req: SnapshotRequest):
     lang = LANG_NAMES.get(req.language, "English")
     sysmsg = (
         "You are an AI lens analyzing a live 3D heritage map of West Bengal's indigenous tribal food landmarks. "
-        "Given the current view context, produce a vivid 90-130 word 'snapshot analysis' describing what the viewer "
+        "Given the current view context, produce a vivid 130-180 word 'snapshot analysis' describing what the viewer "
         "is seeing — the landscape, the communities and their foods — and why it matters culturally. "
         f"Plain flowing text only, no markdown. Write entirely in {lang}."
     )
@@ -280,24 +281,30 @@ async def ai_questions(req: QuestionsRequest):
         e = await db.entries.find_one({"entry_id": req.entry_id}, {"_id": 0})
         if not e:
             raise HTTPException(404, "Entry not found")
-        ctx = entry_context(e, 300)
-        key = f"q|{req.entry_id}|{req.language}"
+        ctx = entry_context(e, 800)
+        key = f"qa|{req.entry_id}|{req.language}"
     else:
         ctx = req.context or "West Bengal indigenous tribal food heritage"
-        key = f"q|{ctx[:200]}|{req.language}"
+        key = f"qa|{ctx[:200]}|{req.language}"
     sysmsg = (
-        "You generate pedagogical questions for learners exploring indigenous tribal food heritage. "
-        'Return STRICT JSON only: {"questions": ["q1","q2","q3","q4","q5"]} — exactly 5 contextually relevant, '
-        "thought-provoking questions grounded in the given context. No markdown fences, no extra keys. "
-        f"Write the questions in {lang}."
+        "You create engaging pedagogical question-and-answer pairs for learners exploring indigenous tribal "
+        "food heritage. Return STRICT JSON only: "
+        '{"qa": [{"q": "question 1", "a": "answer 1"}, {"q": "q2", "a": "a2"}, {"q": "q3", "a": "a3"}, '
+        '{"q": "q4", "a": "a4"}, {"q": "q5", "a": "a5"}]} — exactly 5 pairs. '
+        "Questions must be thought-provoking and grounded in the given context. Answers must be 2-3 sentences, "
+        "warm and engaging, derived ONLY from the provided content. No markdown fences, no extra keys. "
+        f"Write both questions and answers in {lang}."
     )
-    raw = await cached_ai(key, sysmsg, f"Context:\n{ctx}\nGenerate exactly 5 questions.")
+    raw = await cached_ai(key, sysmsg, f"Context:\n{ctx}\nGenerate exactly 5 question-answer pairs.")
     cleaned = re.sub(r"^```(json)?|```$", "", raw.strip(), flags=re.M).strip()
+    qa = []
     try:
-        questions = json.loads(cleaned)["questions"][:5]
+        qa = json.loads(cleaned)["qa"][:5]
+        qa = [{"q": str(p.get("q", "")), "a": str(p.get("a", ""))} for p in qa if p.get("q")]
     except Exception:
-        questions = [q.strip("-• ") for q in cleaned.split("\n") if len(q.strip()) > 15][:5]
-    return {"questions": questions, "language": req.language}
+        lines = [q.strip("-• ") for q in cleaned.split("\n") if len(q.strip()) > 15][:5]
+        qa = [{"q": l, "a": ""} for l in lines]
+    return {"qa": qa, "questions": [p["q"] for p in qa], "language": req.language}
 
 
 @api_router.post("/ai/translate")

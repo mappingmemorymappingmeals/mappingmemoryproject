@@ -55,17 +55,17 @@
 }
 
 .mmm-marker-medallion {
-    width: var(--size, 46px);
-    height: var(--size, 46px);
+    width: var(--size, 52px);
+    height: var(--size, 52px);
     border-radius: 9999px;
     background: linear-gradient(145deg, #2b1d12, #1a120a);
-    border: 2px solid var(--halo, #d07a3a);
+    border: 2.5px solid var(--halo, #d07a3a);
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow:
-        0 0 0 5px color-mix(in srgb, var(--halo, #d07a3a) 20%, transparent),
-        0 0 26px color-mix(in srgb, var(--halo, #d07a3a) 45%, transparent),
+        0 0 0 6px color-mix(in srgb, var(--halo, #d07a3a) 20%, transparent),
+        0 0 30px color-mix(in srgb, var(--halo, #d07a3a) 45%, transparent),
         0 8px 22px rgba(0, 0, 0, 0.6);
     transition:
         box-shadow 0.25s ease,
@@ -74,39 +74,39 @@
 }
 
 .mmm-marker:hover .mmm-marker-medallion {
-    transform: scale(1.08);
+    transform: scale(1.1);
     box-shadow:
-        0 0 0 7px color-mix(in srgb, var(--halo, #d07a3a) 30%, transparent),
-        0 0 40px color-mix(in srgb, var(--halo, #d07a3a) 65%, transparent),
+        0 0 0 8px color-mix(in srgb, var(--halo, #d07a3a) 30%, transparent),
+        0 0 46px color-mix(in srgb, var(--halo, #d07a3a) 65%, transparent),
         0 10px 26px rgba(0, 0, 0, 0.65);
 }
 
 .mmm-marker.selected .mmm-marker-medallion {
     border-color: #e3b448;
     box-shadow:
-        0 0 0 7px rgba(227, 180, 72, 0.3),
-        0 0 44px rgba(227, 180, 72, 0.6),
+        0 0 0 8px rgba(227, 180, 72, 0.3),
+        0 0 50px rgba(227, 180, 72, 0.6),
         0 10px 26px rgba(0, 0, 0, 0.65);
 }
 
 .mmm-marker-medallion svg {
-    width: 55%;
-    height: 55%;
+    width: 58%;
+    height: 58%;
 }
 
 .mmm-marker-count {
     position: absolute;
-    top: -6px;
-    right: -7px;
-    min-width: 21px;
-    height: 21px;
-    padding: 0 5px;
+    top: -7px;
+    right: -8px;
+    min-width: 25px;
+    height: 25px;
+    padding: 0 6px;
     border-radius: 999px;
     background: #e3b448;
     color: #1a120a;
     font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,16 +115,17 @@
 
 .mmm-marker-label {
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + 7px);
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
     background: #1f150c;
     color: #f2ece1;
     border: 1px solid rgba(224, 138, 78, 0.35);
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 9px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
@@ -180,6 +181,67 @@
     opacity: 0.55;
 }
 
+/* ---------------- Loading screen ---------------- */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0e0904;
+}
+
+.loading-msg {
+    animation: loadingMsg 0.7s ease both;
+}
+
+@keyframes loadingMsg {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loading-bar {
+    width: min(420px, 70vw);
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(224, 138, 78, 0.18);
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #d07a3a, #e3b448);
+    animation: loadFill 7.5s linear both;
+}
+
+@keyframes loadFill {
+    from {
+        width: 2%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.loading-spin {
+    animation: spinSlow 7s linear infinite;
+}
+
+@keyframes spinSlow {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* ---------------- Tour overlay ---------------- */
 .tour-word {
     border-radius: 4px;
@@ -188,17 +250,18 @@
 }
 
 .tour-word.active {
-    background: rgba(227, 180, 72, 0.35);
+    background: rgba(227, 180, 72, 0.38);
     color: #fff;
 }
 
-.tour-bg {
+.tour-bg-layer {
     position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center;
     filter: blur(2px) brightness(0.5);
     transform: scale(1.04);
+    transition: opacity 2.2s ease;
 }
 
 /* speaking pulse */
@@ -208,7 +271,7 @@
         box-shadow: 0 0 0 0 rgba(227, 180, 72, 0.5);
     }
     50% {
-        box-shadow: 0 0 0 12px rgba(227, 180, 72, 0);
+        box-shadow: 0 0 0 14px rgba(227, 180, 72, 0);
     }
 }
 
@@ -220,12 +283,12 @@
 .eq {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
-    height: 14px;
+    gap: 2.5px;
+    height: 18px;
 }
 
 .eq span {
-    width: 3px;
+    width: 3.5px;
     background: #e3b448;
     border-radius: 2px;
     animation: eqb 0.9s ease-in-out infinite;
@@ -244,16 +307,16 @@
 @keyframes eqb {
     0%,
     100% {
-        height: 4px;
+        height: 5px;
     }
     50% {
-        height: 14px;
+        height: 18px;
     }
 }
 
 .eq.paused span {
     animation-play-state: paused;
-    height: 4px;
+    height: 5px;
 }
 
 /* intro overlay */
@@ -281,7 +344,7 @@
 .maplibregl-ctrl-attrib {
     background: rgba(20, 14, 8, 0.75) !important;
     color: #b8ab94 !important;
-    font-size: 10px !important;
+    font-size: 11px !important;
 }
 
 .maplibregl-ctrl-attrib a {
@@ -296,6 +359,8 @@
 
 .maplibregl-ctrl-group button {
     background: transparent !important;
+    width: 34px !important;
+    height: 34px !important;
 }
 
 .maplibregl-ctrl-group button span {
@@ -316,4 +381,9 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* mobile layout mode (forced via toggle or small screens) */
+.mmm-mobile .mmm-marker-label {
+    display: none;
 }

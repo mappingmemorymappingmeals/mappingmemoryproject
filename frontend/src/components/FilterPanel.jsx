@@ -1,6 +1,5 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { TribalIcon, WarliStrip } from "@/components/TribalIcons";
@@ -35,6 +34,7 @@ export default function FilterPanel({
   setFilters,
   visibleCount,
   totalCount,
+  isMobile,
 }) {
   const L = LABELS[lang];
 
@@ -66,8 +66,8 @@ export default function FilterPanel({
         >
           <div className="flex items-center justify-between px-5 pt-4 pb-2">
             <div>
-              <h2 className="text-[15px] font-semibold text-[#f2ece1]">{L.explore}</h2>
-              <p className="font-mono text-[10px] text-[#a08a68] mt-0.5" data-testid="visible-count">
+              <h2 className="text-[21px] font-bold text-[#f2ece1]" style={{ fontFamily: "var(--font-display)" }}>{L.explore}</h2>
+              <p className="font-mono text-[14px] text-[#a08a68] mt-0.5" data-testid="visible-count">
                 {visibleCount} {L.of} {totalCount} {L.visible}
               </p>
             </div>
@@ -89,17 +89,17 @@ export default function FilterPanel({
             <button
               onClick={clearAll}
               data-testid="clear-filters-button"
-              className="mx-5 mt-1 mb-1 text-left text-[12px] text-[#e3b448] hover:text-[#f0c86a] transition-colors duration-200"
+              className="mx-5 mt-1 mb-1 text-left text-[14px] text-[#e3b448] hover:text-[#f0c86a] transition-colors duration-200"
             >
               ✕ {L.clearAll}
             </button>
           )}
 
-          <ScrollArea className="flex-1 px-5 pb-4">
+          <div className="flex-1 min-h-0 px-5 pb-4 overflow-y-auto">
             <Accordion type="multiple" defaultValue={["communities"]} className="w-full">
               {/* Communities */}
               <AccordionItem value="communities" className="border-[hsl(26_14%_20%)]">
-                <AccordionTrigger className="text-[13px] text-[#e8dcc5] hover:no-underline py-3">
+                <AccordionTrigger className="text-[17.5px] font-semibold text-[#e8dcc5] hover:no-underline py-3.5">
                   <span className="flex items-center gap-2">
                     <TribalIcon name="community" size={15} color="#d3a273" /> {L.community}
                   </span>
@@ -115,7 +115,7 @@ export default function FilterPanel({
                           key={c.community}
                           onClick={() => toggleCommunity(short)}
                           data-testid={`filters-community-chip-${short.replace(/[^a-zA-Z]+/g, "-").toLowerCase()}`}
-                          className="rounded-full px-2.5 py-1 text-[11.5px] border transition-colors duration-200"
+                          className="rounded-full px-2.5 py-1 text-[15.5px] border transition-colors duration-200"
                           style={{
                             borderColor: active ? col : "hsl(26 14% 24%)",
                             background: active ? col : "transparent",
@@ -135,13 +135,13 @@ export default function FilterPanel({
                       );
                     })}
                   </div>
-                  <p className="font-mono text-[9.5px] text-[#7a6b55] mt-2">✦ = PVTG (Particularly Vulnerable Tribal Group)</p>
+                  <p className="font-mono text-[12px] text-[#7a6b55] mt-2">✦ = PVTG (Particularly Vulnerable Tribal Group)</p>
                 </AccordionContent>
               </AccordionItem>
 
               {/* Districts */}
               <AccordionItem value="districts" className="border-[hsl(26_14%_20%)]">
-                <AccordionTrigger className="text-[13px] text-[#e8dcc5] hover:no-underline py-3">
+                <AccordionTrigger className="text-[17.5px] font-semibold text-[#e8dcc5] hover:no-underline py-3.5">
                   <span className="flex items-center gap-2">
                     <TribalIcon name="pin" size={15} color="#d3a273" /> {L.district}
                   </span>
@@ -155,7 +155,7 @@ export default function FilterPanel({
                           key={d}
                           onClick={() => setFilters((f) => ({ ...f, district: active ? null : d }))}
                           data-testid={`filters-district-${d.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`}
-                          className={`rounded-full px-2.5 py-1 text-[11.5px] border transition-colors duration-200 ${
+                          className={`rounded-full px-2.5 py-1 text-[15.5px] border transition-colors duration-200 ${
                             active
                               ? "bg-[#2e6f7a] border-[#2e6f7a] text-[#f2ece1] font-semibold"
                               : "border-[hsl(26_14%_24%)] text-[#cfc4ae] hover:border-[#2e6f7a]"
@@ -171,7 +171,7 @@ export default function FilterPanel({
 
               {/* Categories */}
               <AccordionItem value="categories" className="border-[hsl(26_14%_20%)]">
-                <AccordionTrigger className="text-[13px] text-[#e8dcc5] hover:no-underline py-3">
+                <AccordionTrigger className="text-[17.5px] font-semibold text-[#e8dcc5] hover:no-underline py-3.5">
                   <span className="flex items-center gap-2">
                     <TribalIcon name="bowl" size={15} color="#d3a273" /> {L.category}
                   </span>
@@ -185,7 +185,7 @@ export default function FilterPanel({
                           key={g}
                           onClick={() => setFilters((f) => ({ ...f, category: active ? null : g }))}
                           data-testid={`filters-category-${g.replace(/[^a-zA-Z]+/g, "-").toLowerCase()}`}
-                          className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[12.5px] border transition-colors duration-200 ${
+                          className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[14.5px] border transition-colors duration-200 ${
                             active
                               ? "bg-[#d07a3a] border-[#d07a3a] text-[#1a120a] font-semibold"
                               : "border-transparent text-[#cfc4ae] hover:bg-[hsl(26_14%_15%)]"
@@ -202,7 +202,7 @@ export default function FilterPanel({
 
               {/* Thematic Trails */}
               <AccordionItem value="trails" className="border-[hsl(26_14%_20%)]">
-                <AccordionTrigger className="text-[13px] text-[#e8dcc5] hover:no-underline py-3">
+                <AccordionTrigger className="text-[17.5px] font-semibold text-[#e8dcc5] hover:no-underline py-3.5">
                   <span className="flex items-center gap-2">
                     <TribalIcon name="spiral" size={15} color="#d3a273" /> {L.trails}
                   </span>
@@ -223,14 +223,14 @@ export default function FilterPanel({
                               }))
                             }
                             data-testid={`filters-trail-${i}`}
-                            className={`w-full text-left rounded-lg px-3 py-2 border text-[12px] leading-snug transition-colors duration-200 ${
+                            className={`w-full text-left rounded-lg px-3 py-2 border text-[14px] leading-snug transition-colors duration-200 ${
                               active
                                 ? "bg-[#3d3016] border-[#e3b448] text-[#f0e3c0]"
                                 : "border-[hsl(26_14%_20%)] text-[#cfc4ae] hover:border-[#e3b448]"
                             }`}
                           >
                             <span className="block font-medium">{x.theme}</span>
-                            <span className="font-mono text-[9.5px] text-[#a08a68]">
+                            <span className="font-mono text-[12px] text-[#a08a68]">
                               {x.entry_ids.length} linked · {x.communities.slice(0, 40)}…
                             </span>
                           </button>
@@ -242,7 +242,7 @@ export default function FilterPanel({
 
               {/* Layer Guide */}
               <AccordionItem value="layers" className="border-none">
-                <AccordionTrigger className="text-[13px] text-[#e8dcc5] hover:no-underline py-3">
+                <AccordionTrigger className="text-[17.5px] font-semibold text-[#e8dcc5] hover:no-underline py-3.5">
                   <span className="flex items-center gap-2">
                     <TribalIcon name="weave" size={15} color="#d3a273" /> {L.layerGuide}
                   </span>
@@ -257,10 +257,10 @@ export default function FilterPanel({
                             <TribalIcon name={meta?.icon || "spiral"} size={14} color="#d3a273" />
                           </div>
                           <div>
-                            <p className="text-[12px] text-[#e8dcc5] leading-tight">
-                              <span className="font-mono text-[10px] text-[#e3b448]">{lg.layer}</span> {lg.name}
+                            <p className="text-[16.5px] font-semibold text-[#e8dcc5] leading-tight">
+                              {lg.name}
                             </p>
-                            <p className="text-[10.5px] text-[#8d7e66] leading-snug">{lg.function}</p>
+                            <p className="text-[14.5px] text-[#8d7e66] leading-snug">{lg.function}</p>
                           </div>
                         </div>
                       );
@@ -270,17 +270,17 @@ export default function FilterPanel({
                         <TribalIcon name="spiral" size={14} color="#d3a273" />
                       </div>
                       <div>
-                        <p className="text-[12px] text-[#e8dcc5] leading-tight">
-                          <span className="font-mono text-[10px] text-[#e3b448]">L14</span> Historical Food Origins
+                        <p className="text-[16.5px] font-semibold text-[#e8dcc5] leading-tight">
+                          Historical Food Origins
                         </p>
-                        <p className="text-[10.5px] text-[#8d7e66] leading-snug">Where each food came from — migration, contact, global parallels.</p>
+                        <p className="text-[14.5px] text-[#8d7e66] leading-snug">Where each food came from — migration, contact, global parallels.</p>
                       </div>
                     </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          </ScrollArea>
+          </div>
         </motion.aside>
       )}
     </AnimatePresence>

@@ -42,7 +42,7 @@ export default function IntroOverlay({ open, onBegin, stats, lang, setLang }) {
               <WarliStrip count={7} size={20} />
             </div>
 
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c89b6c] mb-4">
+            <p className="font-mono text-[13.5px] uppercase tracking-[0.3em] text-[#c89b6c] mb-4">
               West Bengal · Indigenous Knowledge System
             </p>
 
@@ -53,7 +53,7 @@ export default function IntroOverlay({ open, onBegin, stats, lang, setLang }) {
             <p className="text-base md:text-lg text-[#cfc4ae] mb-2">{L.subtitle}</p>
             <p className="text-sm text-[#a89a80] max-w-xl mx-auto mb-8">{L.tagline}</p>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-9 font-mono text-[13px] text-[#d3a273]">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-9 font-mono text-[15px] text-[#d3a273]">
               <span className="flex items-center gap-2">
                 <TribalIcon name="bowl" size={16} color="#e3b448" /> {stats?.entries ?? 100} {L.entries}
               </span>

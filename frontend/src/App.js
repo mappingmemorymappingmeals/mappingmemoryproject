@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 import MapView from "@/components/MapView";
+import LoadingScreen from "@/components/LoadingScreen";
 import IntroOverlay from "@/components/IntroOverlay";
 import TopBar from "@/components/TopBar";
 import FilterPanel from "@/components/FilterPanel";
@@ -12,6 +13,8 @@ import DetailDrawer from "@/components/DetailDrawer";
 import TourOverlay from "@/components/TourOverlay";
 import SnapshotDialog from "@/components/SnapshotDialog";
 import MusicPlayer from "@/components/MusicPlayer";
+import HelpDialog from "@/components/HelpDialog";
+import AboutDialog from "@/components/AboutDialog";
 
 import {
   fetchPlaces,
@@ -28,7 +31,7 @@ export default function App() {
   const musicRef = useRef(null);
 
   const [lang, setLang] = useState("en");
-  const [intro, setIntro] = useState(true);
+  const [stage, setStage] = useState("loading"); // loading | intro | map
   const [showMarkers, setShowMarkers] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -51,7 +54,20 @@ export default function App() {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [tourEntry, setTourEntry] = useState(null);
   const [snapshotOpen, setSnapshotOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [viewContext, setViewContext] = useState(null);
+
+  // ---- responsive + user-selectable layout ----
+  const [viewMode, setViewMode] = useState("auto"); // auto | desktop | mobile
+  const [winW, setWinW] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
+  useEffect(() => {
+    const onResize = () => setWinW(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const isMobile = viewMode === "mobile" || (viewMode === "auto" && winW < 768);
+  const toggleViewMode = () => setViewMode(isMobile ? "desktop" : "mobile");
 
   const reducedMotion = useMemo(
     () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
@@ -114,12 +130,12 @@ export default function App() {
 
   // ---- handlers
   const handleBegin = () => {
-    setIntro(false);
+    setStage("map");
     musicRef.current?.start();
     mapRef.current?.startCinematic();
     setTimeout(() => {
       setShowMarkers(true);
-      setFiltersOpen(window.innerWidth > 900);
+      setFiltersOpen(!isMobile);
     }, reducedMotion ? 300 : 4200);
   };
 
@@ -148,6 +164,12 @@ export default function App() {
     setSnapshotOpen(true);
   };
 
+  const handleHome = () => {
+    setSelectedPlace(null);
+    setSelectedEntry(null);
+    mapRef.current?.resetToWB();
+  };
+
   const handleDuck = useCallback((on) => {
     musicRef.current?.duck(on);
   }, []);
@@ -155,7 +177,7 @@ export default function App() {
   const selectedPlaceKey = selectedPlace ? `${selectedPlace.lat},${selectedPlace.lng}` : null;
 
   return (
-    <div className="mmm-app" lang={lang}>
+    <div className={`mmm-app ${isMobile ? "mmm-mobile" : ""}`} lang={lang}>
       <MapView
         ref={mapRef}
         places={filteredPlaces}
@@ -165,7 +187,7 @@ export default function App() {
         reducedMotion={reducedMotion}
       />
 
-      {!intro && (
+      {stage === "map" && (
         <TopBar
           lang={lang}
           setLang={setLang}
@@ -173,11 +195,17 @@ export default function App() {
           setQ={(q) => setFilters((f) => ({ ...f, q }))}
           onSnapshot={handleSnapshot}
           onToggleFilters={() => setFiltersOpen((o) => !o)}
+          onHelp={() => setHelpOpen(true)}
+          onAbout={() => setAboutOpen(true)}
+          onHome={handleHome}
           snapshotBusy={false}
+          viewMode={isMobile ? "mobile" : "desktop"}
+          onToggleViewMode={toggleViewMode}
+          isMobile={isMobile}
         />
       )}
 
-      {!intro && (
+      {stage === "map" && (
         <FilterPanel
           open={filtersOpen}
           onClose={() => setFiltersOpen(false)}
@@ -201,16 +229,17 @@ export default function App() {
           setFilters={setFilters}
           visibleCount={visibleCount}
           totalCount={stats?.entries ?? 100}
+          isMobile={isMobile}
         />
       )}
 
-      {!intro && filters.trail && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 mmm-panel px-4 py-2 flex items-center gap-3 fade-in-up" data-testid="trail-banner">
-          <span className="text-[12px] text-[#e3b448]">◈ {filters.trail.theme}</span>
+      {stage === "map" && filters.trail && (
+        <div className="absolute top-[70px] left-1/2 -translate-x-1/2 z-20 mmm-panel px-5 py-2.5 flex items-center gap-3 fade-in-up" data-testid="trail-banner">
+          <span className="text-[14px] font-semibold text-[#e3b448]">◈ {filters.trail.theme}</span>
           <button
             onClick={() => setFilters((f) => ({ ...f, trail: null }))}
             data-testid="clear-trail-button"
-            className="text-[11px] text-[#a08a68] hover:text-[#f2ece1] transition-colors duration-200 underline"
+            className="text-[13px] text-[#a08a68] hover:text-[#f2ece1] transition-colors duration-200 underline"
           >
             ✕
           </button>
@@ -222,14 +251,20 @@ export default function App() {
         lang={lang}
         onClose={() => setSelectedPlace(null)}
         onEntryOpen={handleEntryOpen}
+        isMobile={isMobile}
       />
 
       {selectedEntry && (
         <DetailDrawer
           entry={selectedEntry}
           lang={lang}
-          onClose={() => setSelectedEntry(null)}
+          onClose={() => {
+            setSelectedEntry(null);
+            setSelectedPlace(null);
+          }}
+          onBack={() => setSelectedEntry(null)}
           onStartTour={handleStartTour}
+          isMobile={isMobile}
         />
       )}
 
@@ -250,9 +285,14 @@ export default function App() {
         onDuck={handleDuck}
       />
 
+      <HelpDialog open={helpOpen} onOpenChange={setHelpOpen} lang={lang} />
+      <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
+
       <MusicPlayer ref={musicRef} lang={lang} />
 
-      <IntroOverlay open={intro} onBegin={handleBegin} stats={stats} lang={lang} setLang={setLang} />
+      {stage === "loading" && <LoadingScreen lang={lang} onDone={() => setStage("intro")} duration={7500} />}
+
+      <IntroOverlay open={stage === "intro"} onBegin={handleBegin} stats={stats} lang={lang} setLang={setLang} />
 
       <Toaster position="top-center" richColors />
     </div>

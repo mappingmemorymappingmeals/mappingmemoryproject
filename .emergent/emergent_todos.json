@@ -1,50 +1,62 @@
 [
   {
-    "content": "Phase 1: Write test_core.py - Excel data parsing/joining (100 entries + geo + origins)",
+    "content": "Backend: richer AI context, Q&A-with-answers endpoint",
     "status": "completed"
   },
   {
-    "content": "Phase 1: Test Gemini AI (tour script, snapshot, 5 questions, BN/HI translation) in test_core.py",
+    "content": "More tribal music (8-track queue, auto-advance) + verified all playable",
     "status": "completed"
   },
   {
-    "content": "Phase 1: Run POC and fix until PASS",
+    "content": "Rotating cultural background images in Talking Tour",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Get design guidelines from design_agent",
+    "content": "AI-generated answers (not just questions) grounded in content",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Seed MongoDB with all parsed data",
+    "content": "Better BN/HI voices + emotional voice modulation + voice picker",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Backend - entries/communities/districts/meta + AI endpoints",
+    "content": "Loading screen (7-8s) with cultural/curiosity/heritage messages",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend - 3D MapLibre map with cinematic India→WB→district flow",
+    "content": "Guide/Toolbox dialog (trilingual) explaining all features + scroll fix",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend - tribal markers, layer filters, 3D popups, detail panel with 13+14 layers",
+    "content": "About dialog: full details, how-it-works, keyboard shortcuts, licensing, credits, copyright",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Talking Tours (Web Speech EN/BN/HI), Snapshot, 5 AI questions, music player",
+    "content": "Keyboard shortcuts for map navigation",
     "status": "completed"
   },
   {
-    "content": "Phase 2: All user stories covered in development",
+    "content": "Times New Roman font, bigger fonts/icons/panels everywhere",
     "status": "completed"
   },
   {
-    "content": "Phase 2: End to End Testing using Testing Agent",
+    "content": "Back button + Home view button",
+    "status": "completed"
+  },
+  {
+    "content": "Remove layer numbering - show only layer names",
+    "status": "completed"
+  },
+  {
+    "content": "Show fuller content reflecting full Excel richness",
+    "status": "completed"
+  },
+  {
+    "content": "Desktop + mobile accessible with user-selectable layout toggle",
+    "status": "completed"
+  },
+  {
+    "content": "End-to-end testing with testing agent + fix all bugs",
     "status": "in_progress"
-  },
-  {
-    "content": "Phase 3: Fix all bugs found by testing agent",
-    "status": "pending"
   }
 ]
