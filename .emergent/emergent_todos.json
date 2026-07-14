@@ -1,26 +1,26 @@
 [
   {
     "content": "Fix XSS: TribalIcons.jsx dangerouslySetInnerHTML + MapView.jsx innerHTML (safe DOM construction)",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
-    "content": "Fix React hook dependencies (TourOverlay, MapView, App.js, MusicPlayer) without breaking behavior",
-    "status": "pending"
+    "content": "Fix React hook dependencies (TourOverlay, MapView, App.js, MusicPlayer, SnapshotDialog) without breaking behavior",
+    "status": "completed"
   },
   {
-    "content": "Add error logging to empty catch blocks (MapView, speech.js)",
-    "status": "pending"
+    "content": "Add error logging to empty catch blocks (MapView, speech.js, AI calls)",
+    "status": "completed"
   },
   {
     "content": "Replace index-as-key with stable keys in 8 components",
-    "status": "pending"
+    "status": "completed"
   },
   {
-    "content": "Reduce complexity: extract hooks/subcomponents (MapView, App, DetailDrawer, FilterPanel)",
-    "status": "pending"
+    "content": "Reduce complexity: extract hooks/subcomponents (MapView, App, DetailDrawer, FilterPanel) + shared QaList",
+    "status": "completed"
   },
   {
     "content": "Verify build + run testing agent to confirm no regressions",
-    "status": "pending"
+    "status": "completed"
   }
 ]
