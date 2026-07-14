@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TribalIcon, WarliStrip } from "@/components/TribalIcons";
+import { QaList } from "@/components/QaList";
 import { LABELS, communityColor, categoryGroup, backgroundsForCommunity } from "@/lib/constants";
 import { aiTour, aiQuestions } from "@/lib/api";
 import {
@@ -36,7 +36,8 @@ export default function TourOverlay({ entry, lang: appLang, onClose, onDuck }) {
   const activeWordRef = useRef(null);
 
   const script = scripts[lang];
-  const backgrounds = backgroundsForCommunity(entry.community);
+  // memoized so the background-rotation effect has a stable dependency
+  const backgrounds = useMemo(() => backgroundsForCommunity(entry.community), [entry.community]);
 
   // rotating backgrounds crossfade
   useEffect(() => {
@@ -67,7 +68,8 @@ export default function TourOverlay({ entry, lang: appLang, onClose, onDuck }) {
       try {
         const res = await aiTour(entry.entry_id, l);
         setScripts((s) => ({ ...s, [l]: res.script }));
-      } catch (e) {
+      } catch (err) {
+        console.error("Tour script generation failed:", err);
         setError("The AI guide could not be reached. Please try again.");
       } finally {
         setLoading(false);
@@ -167,7 +169,8 @@ export default function TourOverlay({ entry, lang: appLang, onClose, onDuck }) {
     try {
       const res = await aiQuestions({ entry_id: entry.entry_id, language: lang });
       setQa(res.qa || (res.questions || []).map((q) => ({ q, a: "" })));
-    } catch (e) {
+    } catch (err) {
+      console.error("Q&A generation failed:", err);
       setQa([]);
     } finally {
       setQLoading(false);
@@ -301,7 +304,8 @@ export default function TourOverlay({ entry, lang: appLang, onClose, onDuck }) {
               {script && !loading && (
                 <p className="text-[19px] md:text-[22px] leading-[2] text-[#e8dcc5]" data-testid="tour-transcript">
                   {words.map((w, i) => (
-                    <span key={i} ref={i === wordIdx ? activeWordRef : null} className={`tour-word ${i === wordIdx ? "active" : ""}`}>
+                    // char offset is a stable unique key for each word position
+                    <span key={offsets[i] ?? `w-${i}`} ref={i === wordIdx ? activeWordRef : null} className={`tour-word ${i === wordIdx ? "active" : ""}`}>
                       {w}{" "}
                     </span>
                   ))}
@@ -367,20 +371,7 @@ export default function TourOverlay({ entry, lang: appLang, onClose, onDuck }) {
                 <p className="text-[18px] font-bold text-[#e3b448] flex items-center gap-2 mb-2" style={{ fontFamily: "var(--font-display)" }}>
                   <HelpCircle size={17} /> {L.questions}
                 </p>
-                <Accordion type="single" collapsible className="w-full">
-                  {qa.map((p, i) => (
-                    <AccordionItem key={i} value={`q${i}`} className="border-[hsl(26_14%_20%)]">
-                      <AccordionTrigger className="text-[17px] text-[#e8dcc5] hover:no-underline text-left py-3">
-                        <span><span className="font-mono text-[#e3b448] mr-2">{i + 1}.</span>{p.q}</span>
-                      </AccordionTrigger>
-                      {p.a && (
-                        <AccordionContent>
-                          <p className="text-[16.5px] leading-relaxed text-[#cfc4ae] pl-6 border-l-2 border-[#e3b44855]">{p.a}</p>
-                        </AccordionContent>
-                      )}
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                <QaList qa={qa} triggerClassName="text-[17px] text-[#e8dcc5]" answerClassName="text-[16.5px]" />
               </motion.div>
             )}
           </AnimatePresence>

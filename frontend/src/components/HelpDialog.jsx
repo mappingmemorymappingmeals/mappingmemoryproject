@@ -21,7 +21,7 @@ export default function HelpDialog({ open, onOpenChange, lang }) {
         <div className="flex-1 min-h-0 pr-3 overflow-y-auto" style={{ maxHeight: "62vh" }} data-testid="help-scroll-area">
           <div className="space-y-4 py-2">
             {H.items.map((item, i) => (
-              <div key={i} className="flex gap-4 items-start rounded-2xl border border-[hsl(26_14%_20%)] bg-[hsl(26_18%_11%)] p-4" data-testid={`help-item-${i}`}>
+              <div key={item.h} className="flex gap-4 items-start rounded-2xl border border-[hsl(26_14%_20%)] bg-[hsl(26_18%_11%)] p-4" data-testid={`help-item-${i}`}>
                 <div className="w-14 h-14 rounded-xl bg-[hsl(26_20%_15%)] border border-[#d07a3a55] flex items-center justify-center shrink-0">
                   <TribalIcon name={item.icon} size={28} color="#d3a273" />
                 </div>

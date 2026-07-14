@@ -105,8 +105,8 @@ export default function AboutDialog({ open, onOpenChange }) {
             <div className="pr-4 overflow-y-auto" style={{ maxHeight: "54vh" }}>
               <Section title="Keyboard shortcuts">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" data-testid="keyboard-shortcuts-list">
-                  {KEYBOARD_SHORTCUTS.map((s, i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-xl border border-[hsl(26_14%_20%)] bg-[hsl(26_18%_11%)] px-4 py-2.5">
+                  {KEYBOARD_SHORTCUTS.map((s) => (
+                    <div key={s.key} className="flex items-center gap-3 rounded-xl border border-[hsl(26_14%_20%)] bg-[hsl(26_18%_11%)] px-4 py-2.5">
                       <kbd className="font-mono text-[16px] font-bold text-[#e3b448] bg-[hsl(26_20%_16%)] border border-[hsl(26_14%_26%)] rounded-lg px-3 py-1 min-w-[64px] text-center">
                         {s.key}
                       </kbd>

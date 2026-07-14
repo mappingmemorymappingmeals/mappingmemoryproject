@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { TribalIcon, WarliStrip } from "@/components/TribalIcons";
+import { QaList } from "@/components/QaList";
 import { LABELS } from "@/lib/constants";
 import { aiSnapshot, aiQuestions } from "@/lib/api";
 import { speak, stopSpeaking, hasVoiceFor, isSpeechSupported } from "@/lib/speech";
@@ -19,7 +19,7 @@ export default function SnapshotDialog({ open, onOpenChange, viewContext, lang, 
 
   const L = LABELS[lang];
 
-  const generate = async () => {
+  const generate = useCallback(async () => {
     if (!viewContext) return;
     setLoading(true);
     setError(null);
@@ -32,14 +32,18 @@ export default function SnapshotDialog({ open, onOpenChange, viewContext, lang, 
       const ctx = `Map view of ${viewContext.district || "West Bengal"}. Foods: ${viewContext.visible_foods?.join(", ")}. Communities: ${viewContext.visible_communities?.join(", ")}`;
       aiQuestions({ context: ctx, language: lang })
         .then((r) => setQa(r.qa || (r.questions || []).map((q) => ({ q, a: "" }))))
-        .catch(() => setQa([]))
+        .catch((err) => {
+          console.error("Snapshot Q&A generation failed:", err);
+          setQa([]);
+        })
         .finally(() => setQLoading(false));
-    } catch (e) {
+    } catch (err) {
+      console.error("Snapshot analysis failed:", err);
       setError("Snapshot analysis failed. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [viewContext, lang]);
 
   useEffect(() => {
     if (open) generate();
@@ -47,8 +51,7 @@ export default function SnapshotDialog({ open, onOpenChange, viewContext, lang, 
       stopSpeaking();
       setSpeaking(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, generate]);
 
   const handleListen = () => {
     if (speaking) {
@@ -113,20 +116,7 @@ export default function SnapshotDialog({ open, onOpenChange, viewContext, lang, 
               </p>
               {qLoading && <Skeleton className="h-5 w-2/3 bg-[hsl(26_16%_16%)]" />}
               {qa && (
-                <Accordion type="single" collapsible className="w-full">
-                  {qa.map((p, i) => (
-                    <AccordionItem key={i} value={`q${i}`} className="border-[hsl(26_14%_18%)]">
-                      <AccordionTrigger className="text-[16.5px] text-[#d9cdb4] hover:no-underline text-left py-2.5">
-                        <span><span className="font-mono text-[#e3b448] mr-2">{i + 1}.</span>{p.q}</span>
-                      </AccordionTrigger>
-                      {p.a && (
-                        <AccordionContent>
-                          <p className="text-[16px] leading-relaxed text-[#cfc4ae] pl-6 border-l-2 border-[#e3b44855]">{p.a}</p>
-                        </AccordionContent>
-                      )}
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                <QaList qa={qa} triggerClassName="text-[16.5px] text-[#d9cdb4]" answerClassName="text-[16px]" />
               )}
             </div>
           )}

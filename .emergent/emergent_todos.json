@@ -1,22 +1,26 @@
 [
   {
-    "content": "Update MUSIC_TRACKS in constants.js with new downloaded tracks",
-    "status": "completed"
-  },
-  {
-    "content": "Enforce font sizes: 20pt headings, 15pt small/body text (index.css overrides)",
-    "status": "completed"
-  },
-  {
-    "content": "Correct stats reflection everywhere: 100 traditions, 7+ communities, 14 layers, 7 districts",
-    "status": "completed"
-  },
-  {
-    "content": "Verify map view, music player queue & AI script punctuation (emotional touch)",
+    "content": "Fix XSS: TribalIcons.jsx dangerouslySetInnerHTML + MapView.jsx innerHTML (safe DOM construction)",
     "status": "in_progress"
   },
   {
-    "content": "Run final testing pass (frontend + backend)",
+    "content": "Fix React hook dependencies (TourOverlay, MapView, App.js, MusicPlayer) without breaking behavior",
+    "status": "pending"
+  },
+  {
+    "content": "Add error logging to empty catch blocks (MapView, speech.js)",
+    "status": "pending"
+  },
+  {
+    "content": "Replace index-as-key with stable keys in 8 components",
+    "status": "pending"
+  },
+  {
+    "content": "Reduce complexity: extract hooks/subcomponents (MapView, App, DetailDrawer, FilterPanel)",
+    "status": "pending"
+  },
+  {
+    "content": "Verify build + run testing agent to confirm no regressions",
     "status": "pending"
   }
 ]

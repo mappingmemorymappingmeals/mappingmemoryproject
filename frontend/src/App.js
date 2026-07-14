@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import "@/App.css";
 import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
 
 import MapView from "@/components/MapView";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -16,15 +15,20 @@ import MusicPlayer from "@/components/MusicPlayer";
 import HelpDialog from "@/components/HelpDialog";
 import AboutDialog from "@/components/AboutDialog";
 
-import {
-  fetchPlaces,
-  fetchEntries,
-  fetchCommunities,
-  fetchLayerGuide,
-  fetchCrossReference,
-  fetchStats,
-} from "@/lib/api";
-import { categoryGroup } from "@/lib/constants";
+import { useArchiveData, useArchiveFilters, useResponsiveLayout } from "@/hooks/useArchive";
+
+const WB_DISTRICTS = [
+  "Alipurduar",
+  "Jalpaiguri",
+  "Darjeeling",
+  "Cooch Behar",
+  "Jhargram",
+  "Paschim Medinipur",
+  "Purulia",
+  "Bankura",
+  "Birbhum",
+  "North 24 Paraganas",
+];
 
 export default function App() {
   const mapRef = useRef(null);
@@ -35,20 +39,9 @@ export default function App() {
   const [showMarkers, setShowMarkers] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const [places, setPlaces] = useState([]);
-  const [entriesById, setEntriesById] = useState({});
-  const [communities, setCommunities] = useState([]);
-  const [layerGuide, setLayerGuide] = useState([]);
-  const [xrefs, setXrefs] = useState([]);
-  const [stats, setStats] = useState(null);
-
-  const [filters, setFilters] = useState({
-    communities: new Set(),
-    district: null,
-    category: null,
-    q: "",
-    trail: null,
-  });
+  const { places, entriesById, communities, layerGuide, xrefs, stats } = useArchiveData();
+  const { filters, setFilters, filteredPlaces, visibleCount } = useArchiveFilters(places);
+  const { isMobile, toggleViewMode, reducedMotion } = useResponsiveLayout();
 
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedEntry, setSelectedEntry] = useState(null);
@@ -57,76 +50,6 @@ export default function App() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [viewContext, setViewContext] = useState(null);
-
-  // ---- responsive + user-selectable layout ----
-  const [viewMode, setViewMode] = useState("auto"); // auto | desktop | mobile
-  const [winW, setWinW] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
-  useEffect(() => {
-    const onResize = () => setWinW(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  const isMobile = viewMode === "mobile" || (viewMode === "auto" && winW < 768);
-  const toggleViewMode = () => setViewMode(isMobile ? "desktop" : "mobile");
-
-  const reducedMotion = useMemo(
-    () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
-    []
-  );
-
-  // ---- data load
-  useEffect(() => {
-    Promise.all([fetchPlaces(), fetchEntries(), fetchCommunities(), fetchLayerGuide(), fetchCrossReference(), fetchStats()])
-      .then(([pl, en, co, lg, xr, st]) => {
-        setPlaces(pl);
-        const map = {};
-        en.forEach((e) => (map[e.entry_id] = e));
-        setEntriesById(map);
-        setCommunities(co);
-        setLayerGuide(lg);
-        setXrefs(xr);
-        setStats(st);
-      })
-      .catch(() => toast.error("Could not load the archive. Please refresh."));
-  }, []);
-
-  // ---- filtering
-  const entryMatches = useCallback(
-    (e) => {
-      if (filters.trail && !filters.trail.ids.has(e.entry_id)) return false;
-      if (filters.communities.size > 0) {
-        const eLower = e.community.toLowerCase();
-        let hit = false;
-        for (const c of filters.communities) {
-          if (eLower.includes(c.toLowerCase().split(" ")[0].replace(/[^a-z]/gi, ""))) {
-            hit = true;
-            break;
-          }
-        }
-        if (!hit) return false;
-      }
-      if (filters.district && !e.district.toLowerCase().includes(filters.district.toLowerCase())) return false;
-      if (filters.category && categoryGroup(e.category).group !== filters.category) return false;
-      if (filters.q) {
-        const q = filters.q.toLowerCase();
-        const hay = `${e.food_name} ${e.local_name} ${e.community} ${e.district} ${e.category}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    },
-    [filters]
-  );
-
-  const filteredPlaces = useMemo(() => {
-    return places
-      .map((p) => ({ ...p, entries: p.entries.filter(entryMatches) }))
-      .filter((p) => p.entries.length > 0);
-  }, [places, entryMatches]);
-
-  const visibleCount = useMemo(
-    () => filteredPlaces.reduce((acc, p) => acc + p.entries.length, 0),
-    [filteredPlaces]
-  );
 
   // ---- handlers
   const handleBegin = () => {
@@ -211,18 +134,7 @@ export default function App() {
           onClose={() => setFiltersOpen(false)}
           lang={lang}
           communities={communities}
-          districts={[
-            "Alipurduar",
-            "Jalpaiguri",
-            "Darjeeling",
-            "Cooch Behar",
-            "Jhargram",
-            "Paschim Medinipur",
-            "Purulia",
-            "Bankura",
-            "Birbhum",
-            "North 24 Paraganas",
-          ]}
+          districts={WB_DISTRICTS}
           xrefs={xrefs}
           layerGuide={layerGuide}
           filters={filters}

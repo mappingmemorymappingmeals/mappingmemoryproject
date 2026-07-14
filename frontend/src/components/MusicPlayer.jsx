@@ -7,6 +7,7 @@ import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
 const MusicPlayer = forwardRef(function MusicPlayer({ lang }, ref) {
   const audioRef = useRef(null);
   const trackIdxRef = useRef(0);
+  const playingRef = useRef(false);
   const [trackIdx, setTrackIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.35);
@@ -15,6 +16,7 @@ const MusicPlayer = forwardRef(function MusicPlayer({ lang }, ref) {
 
   const L = LABELS[lang];
   trackIdxRef.current = trackIdx;
+  playingRef.current = playing;
 
   useEffect(() => {
     const a = audioRef.current;
@@ -34,15 +36,19 @@ const MusicPlayer = forwardRef(function MusicPlayer({ lang }, ref) {
     return () => a.removeEventListener("ended", onEnded);
   }, []);
 
+  // playingRef avoids a stale closure on `playing` without re-running this
+  // effect (which would restart the track) on every play/pause toggle.
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
     a.src = TRACKS[trackIdx].src;
     a.loop = false; // queue mode — no looping, advance on end
-    if (playing) {
-      a.play().catch(() => setPlaying(false));
+    if (playingRef.current) {
+      a.play().catch((err) => {
+        console.warn("Audio playback failed:", err?.message || err);
+        setPlaying(false);
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackIdx]);
 
   const toggle = () => {

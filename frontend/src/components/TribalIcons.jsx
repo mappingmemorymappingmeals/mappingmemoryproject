@@ -1,4 +1,9 @@
 // Warli / Santal inspired geometric line icons — 24x24 viewBox, stroke-based
+// SECURITY: icon markup is static & internal, but we never inject raw HTML.
+// Markup is parsed with DOMParser and rebuilt through an allow-list of safe
+// SVG tags/attributes (no dangerouslySetInnerHTML / innerHTML anywhere).
+import React from "react";
+
 export const ICON_PATHS = {
   pot: '<path d="M8 4h8M9 4c0 2-2 3-2 5 0 4 2 7 5 7s5-3 5-7c0-2-2-3-2-5"/><path d="M12 16v3"/><path d="M9 21h6"/><circle cx="12" cy="9" r="1" fill="currentColor" stroke="none"/>',
   grain: '<path d="M12 21V8"/><path d="M12 8c-3 0-4-2-4-4 2 0 4 1 4 4zM12 8c3 0 4-2 4-4-2 0-4 1-4 4z"/><path d="M12 13c-3 0-4-2-4-4 2 0 4 1 4 4zM12 13c3 0 4-2 4-4-2 0-4 1-4 4z"/><path d="M12 18c-3 0-4-2-4-4 2 0 4 1 4 4zM12 18c3 0 4-2 4-4-2 0-4 1-4 4z"/>',
@@ -27,8 +32,45 @@ export const ICON_PATHS = {
   camera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/>',
 };
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+const ALLOWED_TAGS = new Set(["path", "circle", "ellipse", "rect", "line", "polyline", "polygon"]);
+
+// Parse static icon markup into sanitized SVG child nodes (allow-listed tags only)
+function parseIconNodes(markup) {
+  const doc = new DOMParser().parseFromString(`<svg xmlns="${SVG_NS}">${markup}</svg>`, "image/svg+xml");
+  if (doc.querySelector("parsererror")) {
+    console.warn("TribalIcons: failed to parse icon markup");
+    return [];
+  }
+  return Array.from(doc.documentElement.children).filter((n) => ALLOWED_TAGS.has(n.tagName.toLowerCase()));
+}
+
+function isSafeAttr(name) {
+  const an = name.toLowerCase();
+  return !an.startsWith("on") && !an.includes("href") && an !== "style";
+}
+
+// Cache of parsed React element arrays per icon name (static content)
+const reactElementCache = new Map();
+
+function iconReactElements(name) {
+  if (reactElementCache.has(name)) return reactElementCache.get(name);
+  const els = parseIconNodes(ICON_PATHS[name] || ICON_PATHS.bowl).map((node, i) => {
+    const tag = node.tagName.toLowerCase();
+    const props = { key: `${name}-${tag}-${i}` };
+    for (const attr of Array.from(node.attributes)) {
+      if (!isSafeAttr(attr.name)) continue;
+      const an = attr.name.toLowerCase();
+      props[an === "stroke-width" ? "strokeWidth" : an] = attr.value;
+    }
+    return React.createElement(tag, props);
+  });
+  reactElementCache.set(name, els);
+  return els;
+}
+
 export function TribalIcon({ name, size = 18, color = "currentColor", strokeWidth = 1.5, className = "" }) {
-  const path = ICON_PATHS[name] || ICON_PATHS.bowl;
+  const iconName = ICON_PATHS[name] ? name : "bowl";
   return (
     <svg
       viewBox="0 0 24 24"
@@ -40,14 +82,31 @@ export function TribalIcon({ name, size = 18, color = "currentColor", strokeWidt
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
-      dangerouslySetInnerHTML={{ __html: path }}
-    />
+      aria-hidden="true"
+    >
+      {iconReactElements(iconName)}
+    </svg>
   );
 }
 
-export function iconSvgString(name, color = "#E8CBA8", strokeWidth = 1.6) {
-  const path = ICON_PATHS[name] || ICON_PATHS.bowl;
-  return `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+// Build a real (sanitized) SVG DOM element — used for MapLibre marker elements.
+// Replaces the old iconSvgString/innerHTML approach.
+export function buildIconSvgElement(name, color = "#E8CBA8", strokeWidth = 1.6) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", color);
+  svg.setAttribute("stroke-width", String(strokeWidth));
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  parseIconNodes(ICON_PATHS[name] ? ICON_PATHS[name] : ICON_PATHS.bowl).forEach((node) => {
+    const child = document.createElementNS(SVG_NS, node.tagName.toLowerCase());
+    Array.from(node.attributes).forEach((attr) => {
+      if (isSafeAttr(attr.name)) child.setAttribute(attr.name, attr.value);
+    });
+    svg.appendChild(child);
+  });
+  return svg;
 }
 
 // Decorative Warli figure strip (dancing stick figures holding hands)
@@ -60,8 +119,8 @@ export function WarliStrip({ color = "#C89B6C", count = 5, size = 16 }) {
   );
   return (
     <div className="warli-strip" aria-hidden="true">
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ transform: i % 2 ? "scaleX(-1)" : "none" }}>{fig}</span>
+      {Array.from({ length: count }, (_, i) => `warli-fig-${i}`).map((figId, i) => (
+        <span key={figId} style={{ transform: i % 2 ? "scaleX(-1)" : "none" }}>{fig}</span>
       ))}
     </div>
   );

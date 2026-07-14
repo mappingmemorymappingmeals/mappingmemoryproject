@@ -92,6 +92,7 @@
 .mmm-marker-medallion svg {
     width: 58%;
     height: 58%;
+    pointer-events: none;
 }
 
 .mmm-marker-count {

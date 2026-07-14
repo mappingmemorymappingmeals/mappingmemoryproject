@@ -47,7 +47,9 @@ export function setPreferredVoice(lang, voiceURI) {
   voiceOverride[lang] = voiceURI;
   try {
     localStorage.setItem(`mmm-voice-${lang}`, voiceURI);
-  } catch (_) {}
+  } catch (err) {
+    console.warn("Could not persist voice preference:", err?.message || err);
+  }
 }
 
 export function getPreferredVoiceURI(lang) {
