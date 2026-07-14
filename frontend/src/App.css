@@ -1,34 +1,319 @@
-.App-logo {
-    height: 40vmin;
+/* ============ Mapping Memory, Mapping Meals — app styles ============ */
+
+.mmm-app {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: hsl(24 18% 7%);
+}
+
+.mmm-map-container {
+    position: absolute;
+    inset: 0;
+}
+
+.mmm-map-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(1100px circle at 50% 42%, transparent 45%, rgba(10, 6, 3, 0.5) 100%);
+    z-index: 2;
+}
+
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0.5;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="160" height="160" filter="url(%23n)" opacity="0.05"/></svg>');
+    mix-blend-mode: overlay;
+}
+
+/* ---------------- Markers ---------------- */
+.mmm-marker {
+    position: relative;
+    cursor: pointer;
+}
+
+.mmm-marker-inner {
+    position: relative;
+    transform-origin: center bottom;
+    animation: marker-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: var(--delay, 0ms);
+}
+
+@keyframes marker-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(14px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.mmm-marker-medallion {
+    width: var(--size, 46px);
+    height: var(--size, 46px);
+    border-radius: 9999px;
+    background: linear-gradient(145deg, #2b1d12, #1a120a);
+    border: 2px solid var(--halo, #d07a3a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 0 0 5px color-mix(in srgb, var(--halo, #d07a3a) 20%, transparent),
+        0 0 26px color-mix(in srgb, var(--halo, #d07a3a) 45%, transparent),
+        0 8px 22px rgba(0, 0, 0, 0.6);
+    transition:
+        box-shadow 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.mmm-marker:hover .mmm-marker-medallion {
+    transform: scale(1.08);
+    box-shadow:
+        0 0 0 7px color-mix(in srgb, var(--halo, #d07a3a) 30%, transparent),
+        0 0 40px color-mix(in srgb, var(--halo, #d07a3a) 65%, transparent),
+        0 10px 26px rgba(0, 0, 0, 0.65);
+}
+
+.mmm-marker.selected .mmm-marker-medallion {
+    border-color: #e3b448;
+    box-shadow:
+        0 0 0 7px rgba(227, 180, 72, 0.3),
+        0 0 44px rgba(227, 180, 72, 0.6),
+        0 10px 26px rgba(0, 0, 0, 0.65);
+}
+
+.mmm-marker-medallion svg {
+    width: 55%;
+    height: 55%;
+}
+
+.mmm-marker-count {
+    position: absolute;
+    top: -6px;
+    right: -7px;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #e3b448;
+    color: #1a120a;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1a120a;
+}
+
+.mmm-marker-label {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: #1f150c;
+    color: #f2ece1;
+    border: 1px solid rgba(224, 138, 78, 0.35);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.mmm-marker:hover .mmm-marker-label {
+    opacity: 1;
+}
+
+/* ---------------- Panels shared ---------------- */
+.mmm-panel {
+    background: hsl(28 22% 10%);
+    border: 1px solid hsl(26 14% 22%);
+    border-radius: 18px;
+    box-shadow: var(--shadow-2);
+    color: hsl(30 33% 96%);
+}
+
+.mmm-panel-carved:not(.absolute):not(.fixed) {
+    position: relative;
+}
+
+.mmm-panel-carved::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(224, 138, 78, 0.14);
+    border-radius: 13px;
     pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.drawer-anim {
+    animation: drawerIn 0.34s ease-out both;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+@keyframes drawerIn {
     from {
-        transform: rotate(0deg);
+        opacity: 0;
+        transform: translateX(32px);
     }
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* warli strip decorative divider */
+.warli-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.55;
+}
+
+/* ---------------- Tour overlay ---------------- */
+.tour-word {
+    border-radius: 4px;
+    padding: 0 1px;
+    transition: background-color 0.15s ease;
+}
+
+.tour-word.active {
+    background: rgba(227, 180, 72, 0.35);
+    color: #fff;
+}
+
+.tour-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px) brightness(0.5);
+    transform: scale(1.04);
+}
+
+/* speaking pulse */
+@keyframes speak-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(227, 180, 72, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(227, 180, 72, 0);
+    }
+}
+
+.speaking-pulse {
+    animation: speak-pulse 1.6s ease-out infinite;
+}
+
+/* equalizer bars for music player */
+.eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+}
+
+.eq span {
+    width: 3px;
+    background: #e3b448;
+    border-radius: 2px;
+    animation: eqb 0.9s ease-in-out infinite;
+}
+
+.eq span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.eq span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+.eq span:nth-child(4) {
+    animation-delay: 0.1s;
+}
+
+@keyframes eqb {
+    0%,
+    100% {
+        height: 4px;
+    }
+    50% {
+        height: 14px;
+    }
+}
+
+.eq.paused span {
+    animation-play-state: paused;
+    height: 4px;
+}
+
+/* intro overlay */
+.intro-title-glow {
+    text-shadow:
+        0 0 40px rgba(208, 122, 58, 0.45),
+        0 2px 18px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes float-slow {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.float-slow {
+    animation: float-slow 5s ease-in-out infinite;
+}
+
+/* maplibre overrides */
+.maplibregl-ctrl-attrib {
+    background: rgba(20, 14, 8, 0.75) !important;
+    color: #b8ab94 !important;
+    font-size: 10px !important;
+}
+
+.maplibregl-ctrl-attrib a {
+    color: #d3a273 !important;
+}
+
+.maplibregl-ctrl-group {
+    background: #221709 !important;
+    border: 1px solid rgba(224, 138, 78, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.maplibregl-ctrl-group button {
+    background: transparent !important;
+}
+
+.maplibregl-ctrl-group button span {
+    filter: invert(0.9) sepia(0.3);
+}
+
+/* thin fade edges for panels over map */
+.fade-in-up {
+    animation: fadeInUp 0.4s ease both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
